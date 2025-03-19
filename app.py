@@ -1,6 +1,8 @@
 # Importar as bibliotecas necessárias
 import pandas as pd
 from ydata_profiling import ProfileReport
+import weasyprint
+import os
 
 # Criar um DataFrame a partir dos dados fornecidos
 # Primeiro, vamos criar o arquivo CSV a partir dos dados que você forneceu
@@ -22,9 +24,19 @@ print("\n")
 # Gerar o relatório de profile
 profile = ProfileReport(df, title="Relatório de Análise Exploratória")
 
-# Salvar o relatório como HTML
-profile.to_file("relatorio_analise.html")
+# Salvar o relatório como HTML (arquivo temporário para conversão)
+html_temp = "relatorio_analise_temp.html"
+profile.to_file(html_temp)
 
-# Também é possível exibir um resumo mínimo no notebook
+# Converter o HTML para PDF
+pdf_output = "relatorio_analise.pdf"
+weasyprint.HTML(html_temp).write_pdf(pdf_output)
+
+# Remover o arquivo HTML temporário
+os.remove(html_temp)
+
+print(f"Relatório PDF gerado com sucesso: {pdf_output}")
+
+# Também é possível exibir um resumo mínimo no console
 print("Resumo do relatório gerado:")
 profile.to_notebook_iframe()
